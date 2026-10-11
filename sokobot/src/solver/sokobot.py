@@ -1,3 +1,10 @@
+def is_solved(boxes, goals):
+    for box in boxes:
+        if box not in goals:
+            return False
+    return True
+
+
 class SokoBot:
     def solveSokobanPuzzle(self, width, height, mapData, itemsData):
         player = None
@@ -22,5 +29,6 @@ class SokoBot:
         print("boxes:", boxes)
         print("goals:", goals)
         print("walls:", sorted(walls))
+        print("solved:", is_solved(boxes, goals))
 
         return ""
