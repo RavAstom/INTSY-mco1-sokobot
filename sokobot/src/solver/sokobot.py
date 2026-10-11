@@ -5,6 +5,18 @@ def is_solved(boxes, goals):
     return True
 
 
+def heuristic(boxes, goals):
+    total = 0
+    for box in boxes:
+        closest = None
+        for goal in goals:
+            distance = abs(box[0] - goal[0]) + abs(box[1] - goal[1])
+            if closest is None or distance < closest:
+                closest = distance
+        total += closest
+    return total
+
+
 class SokoBot:
     def solveSokobanPuzzle(self, width, height, mapData, itemsData):
         player = None
@@ -30,5 +42,6 @@ class SokoBot:
         print("goals:", goals)
         print("walls:", sorted(walls))
         print("solved:", is_solved(boxes, goals))
+        print("heuristic:", heuristic(boxes, goals))
 
         return ""
