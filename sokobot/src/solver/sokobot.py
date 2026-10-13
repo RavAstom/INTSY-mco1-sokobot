@@ -30,7 +30,45 @@ def dead_squares(width, height, walls, goals):
             if (wall_up or wall_down) and (wall_left or wall_right):
                 dead.add((row, col))
     return dead
+    
+# Some sort of state thingy (don't know if this would work for us)
 
+def __init__(self, value, parent,
+                 start = 0,
+                 goal = 0):
+
+        self.children = []
+        self.parent = parent
+        self.value = value
+        self.dist = 0
+
+        if parent:
+            self.start = parent.start
+            self.goal = parent.goal
+            self.path = parent.path[:]
+            self.path.append(value)
+        else:
+            self.path = [value]
+            self.start = start
+            self.goal = goal
+
+class aStar_solver:
+    def __init__(self, start, goal):
+        self.path = []
+        self.visitedQueue = []
+        self.priorityQueue = PriorityQueue()
+        self.start = start
+        self.goal = goal
+    
+    # pretent startState mean something
+    
+    count = 0
+    self.priorityQueue.put((0,count,startState))
+    
+    def solve(self):
+        while(not self.path and self.priorityQueue.qsize()):
+           # something 
+    
 
 class SokoBot:
     def solveSokobanPuzzle(self, width, height, mapData, itemsData):
