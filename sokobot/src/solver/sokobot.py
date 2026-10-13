@@ -60,12 +60,15 @@ class aStar_solver:
         self.start = start
         self.goal = goal
     
-    # pretent startState mean something
     
-    count = 0
-    self.priorityQueue.put((0,count,startState))
     
     def solve(self):
+        
+        # pretent startState mean something
+    
+        count = 0
+        self.priorityQueue.put((0,count,startState))
+        
         while(not self.path and self.priorityQueue.qsize()):
            # something 
     
