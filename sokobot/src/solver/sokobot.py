@@ -1,3 +1,5 @@
+import heapq
+
 def is_solved(boxes, goals):
     for box in boxes:
         if box not in goals:
@@ -30,48 +32,65 @@ def dead_squares(width, height, walls, goals):
             if (wall_up or wall_down) and (wall_left or wall_right):
                 dead.add((row, col))
     return dead
-    
-# Some sort of state thingy (don't know if this would work for us)
-
-def __init__(self, value, parent,
-                 start = 0,
-                 goal = 0):
-
-        self.children = []
-        self.parent = parent
-        self.value = value
-        self.dist = 0
-
-        if parent:
-            self.start = parent.start
-            self.goal = parent.goal
-            self.path = parent.path[:]
-            self.path.append(value)
-        else:
-            self.path = [value]
-            self.start = start
-            self.goal = goal
 
 class aStar_solver:
-    def __init__(self, start, goal):
-        self.path = []
-        self.visitedQueue = []
-        self.priorityQueue = PriorityQueue()
-        self.start = start
-        self.goal = goal
-    
-    
-    
+    def __init__(self, player, boxes, goals, walls, dead):
+
+        #idk what init means sorry i never coded in python but the tutorial told me to
+        self.player = player
+        self.boxes = sorted(boxes)
+        self.goals = goals
+        self.walls = walls
+        self.dead = dead
+
     def solve(self):
-        
-        # pretent startState mean something
-    
-        count = 0
-        self.priorityQueue.put((0,count,startState))
-        
-        while(not self.path and self.priorityQueue.qsize()):
-           # something 
-    
+        start_f = heuristic(self.boxes, self.goals)
+        open_list = [[start_f, 0, self.player, self.boxes, ""]]  # thank fuck python allows this LMAO
+        visited = {}
+        visited[(self.player, tuple(self.boxes))] = 0
+
+        while len(open_list) > 0:
+            best_index = 0
+            for i in range(len(open_list)):
+                if open_list[i][0] < open_list[best_index][0]:
+                    best_index = i
+            current = open_list.pop(best_index)
+
+            g = current[1]
+            player = current[2]
+            boxes = current[3]
+            path = current[4]
+
+            if is_solved(boxes, self.goals):
+                return path
+
+            moves = [("u", -1, 0), ("d", 1, 0), ("l", 0, -1), ("r", 0, 1)]
+
+            #??? actually dont know what this does
+            for move in moves:
+                letter = move[0]
+                next_pos = (player[0] + move[1], player[1] + move[2])
+
+                if next_pos in self.walls:
+                    continue
+
+                new_boxes = list(boxes)
+                if next_pos in boxes:
+                    beyond = (next_pos[0] + move[1], next_pos[1] + move[2])
+                    if beyond in self.walls or beyond in boxes or beyond in self.dead:
+                        continue
+                    new_boxes.remove(next_pos)
+                    new_boxes.append(beyond)
+                    new_boxes.sort()
+
+                key = (next_pos, tuple(new_boxes))
+                new_g = g + 1
+                if key not in visited or new_g < visited[key]:
+                    visited[key] = new_g
+                    new_f = new_g + heuristic(new_boxes, self.goals)
+                    open_list.append([new_f, new_g, next_pos, new_boxes, path + letter])
+
+        return ""
 
 class SokoBot:
     def solveSokobanPuzzle(self, width, height, mapData, itemsData):
@@ -93,12 +112,6 @@ class SokoBot:
                 elif mapData[row][col] == '#':
                     walls.add((row, col))
 
-        print("player:", player)
-        print("boxes:", boxes)
-        print("goals:", goals)
-        print("walls:", sorted(walls))
-        print("solved:", is_solved(boxes, goals))
-        print("heuristic:", heuristic(boxes, goals))
-        print("dead squares:", sorted(dead_squares(width, height, walls, goals)))
-
-        return ""
+        dead = dead_squares(width, height, walls, goals)
+        solver = aStar_solver(player, boxes, goals, walls, dead)
+        return solver.solve()
