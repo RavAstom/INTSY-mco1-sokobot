@@ -46,15 +46,12 @@ class aStar_solver:
     def solve(self):
         start_f = heuristic(self.boxes, self.goals)
         open_list = [[start_f, 0, self.player, self.boxes, ""]]  # thank fuck python allows this LMAO
+        heapq.heapify(open_list)
         visited = {}
         visited[(self.player, tuple(self.boxes))] = 0
 
         while len(open_list) > 0:
-            best_index = 0
-            for i in range(len(open_list)):
-                if open_list[i][0] < open_list[best_index][0]:
-                    best_index = i
-            current = open_list.pop(best_index)
+            current = heapq.heappop(open_list)
 
             g = current[1]
             player = current[2]
@@ -88,7 +85,7 @@ class aStar_solver:
                 if key not in visited or new_g < visited[key]:
                     visited[key] = new_g
                     new_f = new_g + heuristic(new_boxes, self.goals)
-                    open_list.append([new_f, new_g, next_pos, new_boxes, path + letter])
+                    heapq.heappush(open_list, (new_f, new_g, next_pos, new_boxes, path + letter))
 
         return ""
 
