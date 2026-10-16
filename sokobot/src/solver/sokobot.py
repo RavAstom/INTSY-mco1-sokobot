@@ -20,16 +20,26 @@ def heuristic(boxes, goals):
 
 
 def dead_squares(width, height, walls, goals):
+    alive = set(goals)
+    to_visit = list(goals)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    while len(to_visit) > 0:
+        current = to_visit.pop()
+        for d_row, d_col in directions:
+            box = (current[0] + d_row, current[1] + d_col)
+            player = (current[0] + 2 * d_row, current[1] + 2 * d_col)
+            if box in alive or box in walls or player in walls:
+                continue
+            if player[0] < 0 or player[0] >= height or player[1] < 0 or player[1] >= width:
+                continue
+            alive.add(box)
+            to_visit.append(box)
+
     dead = set()
     for row in range(height):
         for col in range(width):
-            if (row, col) in walls or (row, col) in goals:
-                continue
-            wall_up = (row - 1, col) in walls
-            wall_down = (row + 1, col) in walls
-            wall_left = (row, col - 1) in walls
-            wall_right = (row, col + 1) in walls
-            if (wall_up or wall_down) and (wall_left or wall_right):
+            if (row, col) not in walls and (row, col) not in alive:
                 dead.add((row, col))
     return dead
 
