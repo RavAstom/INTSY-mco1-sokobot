@@ -46,7 +46,6 @@ def dead_squares(width, height, walls, goals):
 class aStar_solver:
     def __init__(self, player, boxes, goals, walls, dead):
 
-        #idk what init means sorry i never coded in python but the tutorial told me to
         self.player = player
         self.boxes = sorted(boxes)
         self.goals = goals
@@ -55,7 +54,7 @@ class aStar_solver:
 
     def solve(self):
         start_f = heuristic(self.boxes, self.goals)
-        open_list = [[start_f, 0, self.player, self.boxes, ""]]  # thank fuck python allows this LMAO
+        open_list = [[start_f, 0, self.player, self.boxes, ""]]
         heapq.heapify(open_list)
         visited = {}
         visited[(self.player, tuple(self.boxes))] = 0
@@ -73,7 +72,6 @@ class aStar_solver:
 
             moves = [("u", -1, 0), ("d", 1, 0), ("l", 0, -1), ("r", 0, 1)]
 
-            #??? actually dont know what this does
             for move in moves:
                 letter = move[0]
                 next_pos = (player[0] + move[1], player[1] + move[2])
